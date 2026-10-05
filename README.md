@@ -1,788 +1,350 @@
-import os
-import json
-import pandas as pd
-import streamlit as st
-from dotenv import load_dotenv
-from openai import OpenAI
-
-
-# ============================================================
-# 1. LOAD ENVIRONMENT VARIABLES
-# ============================================================
-
-load_dotenv()
-
-api_key = os.getenv("OPENAI_API_KEY")
+# 📊 MarketIntel AI
 
+### AI-Powered Market Research & Business Intelligence Dashboard
 
-# ============================================================
-# 2. PAGE CONFIGURATION
-# ============================================================
+**MarketIntel AI** is an AI-powered interactive dashboard that analyzes markets, customers, competitors, opportunities, and business risks to provide actionable insights for smarter business decisions.
 
-st.set_page_config(
-    page_title="MarketIntel AI",
-    page_icon="📊",
-    layout="wide"
-)
+---
 
+## 🚀 Overview
 
-# ============================================================
-# 3. CUSTOM CSS
-# ============================================================
+Market research usually requires collecting and analyzing large amounts of information manually. **MarketIntel AI** simplifies this process by allowing users to enter basic information about a business or product and automatically generating useful market intelligence.
 
-st.markdown(
-    """
-    <style>
+The application uses AI to analyze the provided business information and presents the results through an interactive dashboard with tables, charts, scores, and strategic recommendations.
 
-    .main-title {
-        font-size: 42px;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 5px;
-    }
+---
 
-    .subtitle {
-        text-align: center;
-        font-size: 18px;
-        margin-bottom: 25px;
-    }
+## ✨ Features
 
-    .dashboard-card {
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid rgba(128,128,128,0.25);
-        margin-bottom: 15px;
-    }
+* 📈 **Market Opportunity Analysis**
+* 👥 **Target Customer Analysis**
+* 🏢 **Competitor Analysis**
+* 📊 **Market Potential Scores**
+* 💡 **Business Opportunity Identification**
+* ⚔️ **SWOT Analysis**
+* 🚀 **Growth Strategy Recommendations**
+* ⚠️ **Business Risk Analysis**
+* 🎯 **AI-Generated Business Recommendations**
+* 📊 **Interactive Charts & Visualizations**
+* 📥 **Downloadable Analysis**
+* 🔐 **No Database Required**
 
-    .score-title {
-        font-size: 15px;
-        font-weight: 600;
-    }
+---
 
-    .score-value {
-        font-size: 32px;
-        font-weight: 700;
-    }
+## 🧠 How It Works
 
-    .swot-box {
-        padding: 18px;
-        border-radius: 12px;
-        border: 1px solid rgba(128,128,128,0.25);
-        min-height: 180px;
-    }
+The application follows a simple workflow:
 
-    .small-text {
-        font-size: 14px;
-    }
+```text
+User Input
+    ↓
+Business / Product Information
+    ↓
+AI Analysis
+    ↓
+Market Intelligence Generation
+    ↓
+Data Processing
+    ↓
+Interactive Dashboard
+    ↓
+Business Insights & Recommendations
+```
 
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+---
 
+## 👤 User Inputs
 
-# ============================================================
-# 4. HEADER
-# ============================================================
+The user provides information such as:
 
-st.markdown(
-    '<div class="main-title">📊 MarketIntel AI</div>',
-    unsafe_allow_html=True
-)
+* **Business/Product Name**
+* **Industry**
+* **Target Customers**
+* **Location**
+* **Competitors**
+* **Product/Service Description**
+* **Business Goal**
 
-st.markdown(
-    '<div class="subtitle">'
-    'AI-Powered Market Research & Competitive Intelligence Dashboard'
-    '</div>',
-    unsafe_allow_html=True
-)
+### Example
 
-st.divider()
+```text
+Business Name: SmartFit
+Industry: Fitness Technology
+Target Customers: College Students and Young Professionals
+Location: Hyderabad
+Competitors: Cult.fit, HealthifyMe
+Product: AI-powered fitness and workout platform
+Business Goal: Increase customer acquisition
+```
 
+---
 
-# ============================================================
-# 5. API KEY CHECK
-# ============================================================
+## 📊 Dashboard Output
 
-if not api_key:
+After analysis, MarketIntel AI generates:
 
-    st.error(
-        "OpenAI API key not found. Please create a .env file "
-        "and add your OPENAI_API_KEY."
-    )
+### 1. Executive Summary
 
-    st.stop()
+A brief overview of the business and its market position.
 
+### 2. Market Opportunity Score
 
-client = OpenAI(api_key=api_key)
+AI-generated scores for:
 
+* Market Opportunity
+* Competitive Position
+* Customer Potential
+* Growth Potential
+* Business Risk
 
-# ============================================================
-# 6. SIDEBAR
-# ============================================================
+### 3. Market Overview
 
-with st.sidebar:
+Provides insights about:
 
-    st.header("📊 MarketIntel AI")
+* Market trends
+* Market potential
+* Customer demand
+* Industry conditions
 
-    st.write(
-        """
-        Analyze your market, customers, competitors,
-        opportunities and business risks using AI.
-        """
-    )
+### 4. Customer Segments
 
-    st.divider()
+Identifies potential customer groups and their characteristics.
 
-    st.subheader("Dashboard Sections")
+### 5. Competitor Analysis
 
-    st.write("📈 Market Overview")
-    st.write("👥 Customer Insights")
-    st.write("🏆 Competitor Intelligence")
-    st.write("⚖️ SWOT Analysis")
-    st.write("🚀 Opportunities")
-    st.write("🎯 Strategies")
-    st.write("⚠️ Risks")
-    st.write("💡 Recommendations")
+Analyzes competitors based on:
 
+* Market position
+* Strengths
+* Weaknesses
+* Threat level
 
-# ============================================================
-# 7. USER INPUT
-# ============================================================
+### 6. SWOT Analysis
 
-st.header("🔎 Business Information")
+The dashboard generates:
 
-col1, col2 = st.columns(2)
+* **Strengths**
+* **Weaknesses**
+* **Opportunities**
+* **Threats**
 
-with col1:
+### 7. Market Opportunities
 
-    business_name = st.text_input(
-        "Business / Product Name",
-        placeholder="Example: FreshBite"
-    )
+Identifies potential opportunities for business growth.
 
-    industry = st.text_input(
-        "Industry",
-        placeholder="Example: Food Delivery"
-    )
+### 8. Growth Strategies
 
-    target_market = st.text_input(
-        "Target Customers",
-        placeholder="Example: College students and young professionals"
-    )
+Provides AI-generated strategies for:
 
-with col2:
+* Customer acquisition
+* Market expansion
+* Product improvement
+* Competitive positioning
 
-    location = st.text_input(
-        "Target Location",
-        placeholder="Example: Hyderabad, India"
-    )
+### 9. Business Risks
 
-    competitors = st.text_input(
-        "Main Competitors",
-        placeholder="Example: Swiggy, Zomato"
-    )
+Highlights possible risks and their impact.
 
-    business_goal = st.text_input(
-        "Business Goal",
-        placeholder="Example: Increase customer acquisition"
-    )
+### 10. AI Recommendations
 
+Provides actionable recommendations based on the complete analysis.
 
-product_description = st.text_area(
-    "Describe your product or business",
-    placeholder=(
-        "Explain what your business offers, what problem it solves "
-        "and what makes it different."
-    ),
-    height=130
-)
+---
 
+## 🛠️ Technologies Used
 
-st.divider()
+| Technology        | Purpose                         |
+| ----------------- | ------------------------------- |
+| **Python**        | Application development         |
+| **Streamlit**     | Interactive dashboard           |
+| **OpenAI API**    | AI-powered market analysis      |
+| **Pandas**        | Data processing                 |
+| **Plotly**        | Interactive visualizations      |
+| **python-dotenv** | Environment variable management |
 
+---
 
-# ============================================================
-# 8. GENERATE BUTTON
-# ============================================================
+## 📁 Project Structure
 
-generate_button = st.button(
-    "🚀 Generate Market Intelligence Dashboard",
-    use_container_width=True
-)
+```text
+MarketIntelAI/
+│
+├── app.py
+├── requirements.txt
+├── .env
+├── .gitignore
+└── README.md
+```
 
+---
 
-# ============================================================
-# 9. AI ANALYSIS
-# ============================================================
+## ⚙️ Installation & Setup
 
-if generate_button:
+### Step 1: Clone the Repository
 
-    # --------------------------------------------------------
-    # INPUT VALIDATION
-    # --------------------------------------------------------
+```bash
+git clone https://github.com/your-username/MarketIntelAI.git
+```
 
-    if not business_name:
-        st.warning("Please enter the business/product name.")
-        st.stop()
+Move into the project folder:
 
-    if not industry:
-        st.warning("Please enter the industry.")
-        st.stop()
+```bash
+cd MarketIntelAI
+```
 
-    if not target_market:
-        st.warning("Please enter the target customers.")
-        st.stop()
+---
 
-    if not product_description:
-        st.warning("Please describe your product or business.")
-        st.stop()
+### Step 2: Create a Virtual Environment
 
+```bash
+python -m venv venv
+```
 
-    # --------------------------------------------------------
-    # AI PROMPT
-    # --------------------------------------------------------
+Activate the environment on Windows:
 
-    prompt = f"""
-You are an expert business development and market intelligence
-analyst.
+```bash
+venv\Scripts\activate
+```
 
-Analyze the following business:
-
-Business Name:
-{business_name}
-
-Industry:
-{industry}
-
-Target Customers:
-{target_market}
-
-Target Location:
-{location}
-
-Competitors:
-{competitors}
-
-Business Goal:
-{business_goal}
-
-Product Description:
-{product_description}
-
-Return ONLY valid JSON.
-
-Do not include markdown.
-Do not include ```json.
-Do not include explanations outside the JSON.
-
-The JSON must have EXACTLY this structure:
-
-{{
-    "executive_summary": "short summary",
-
-    "scores": {{
-        "market_opportunity": 0,
-        "competitive_position": 0,
-        "customer_potential": 0,
-        "growth_potential": 0,
-        "business_risk": 0
-    }},
-
-    "market_overview": {{
-        "industry_outlook": "text",
-        "key_factors": [
-            "factor 1",
-            "factor 2",
-            "factor 3",
-            "factor 4"
-        ]
-    }},
-
-    "customer_segments": [
-        {{
-            "segment": "segment name",
-            "description": "description",
-            "needs": "main needs",
-            "pain_points": "main pain points",
-            "potential_score": 0
-        }},
-        {{
-            "segment": "segment name",
-            "description": "description",
-            "needs": "main needs",
-            "pain_points": "main pain points",
-            "potential_score": 0
-        }},
-        {{
-            "segment": "segment name",
-            "description": "description",
-            "needs": "main needs",
-            "pain_points": "main pain points",
-            "potential_score": 0
-        }}
-    ],
-
-    "competitors": [
-        {{
-            "name": "competitor name",
-            "strengths": "strengths",
-            "weaknesses": "weaknesses",
-            "threat_level": 0,
-            "competitive_note": "short note"
-        }}
-    ],
-
-    "swot": {{
-        "strengths": [
-            "item 1",
-            "item 2",
-            "item 3"
-        ],
-        "weaknesses": [
-            "item 1",
-            "item 2",
-            "item 3"
-        ],
-        "opportunities": [
-            "item 1",
-            "item 2",
-            "item 3"
-        ],
-        "threats": [
-            "item 1",
-            "item 2",
-            "item 3"
-        ]
-    }},
-
-    "market_opportunities": [
-        {{
-            "opportunity": "opportunity name",
-            "description": "description",
-            "score": 0
-        }},
-        {{
-            "opportunity": "opportunity name",
-            "description": "description",
-            "score": 0
-        }},
-        {{
-            "opportunity": "opportunity name",
-            "description": "description",
-            "score": 0
-        }},
-        {{
-            "opportunity": "opportunity name",
-            "description": "description",
-            "score": 0
-        }}
-    ],
-
-    "growth_strategies": [
-        "strategy 1",
-        "strategy 2",
-        "strategy 3",
-        "strategy 4",
-        "strategy 5"
-    ],
-
-    "business_risks": [
-        {{
-            "risk": "risk name",
-            "severity": 0,
-            "mitigation": "how to reduce this risk"
-        }},
-        {{
-            "risk": "risk name",
-            "severity": 0,
-            "mitigation": "how to reduce this risk"
-        }},
-        {{
-            "risk": "risk name",
-            "severity": 0,
-            "mitigation": "how to reduce this risk"
-        }}
-    ],
-
-    "recommendations": [
-        "recommendation 1",
-        "recommendation 2",
-        "recommendation 3",
-        "recommendation 4",
-        "recommendation 5"
-    ]
-}}
-
-IMPORTANT:
-
-All score values must be integers from 0 to 100.
-
-The analysis should be an AI-based assessment, not a claim of
-real-time market research.
-
-Do not claim to have accessed live websites, private databases,
-financial reports or real-time competitor information.
-
-If competitor information is uncertain, clearly treat it as an
-AI assessment.
-"""
-
-
-    # --------------------------------------------------------
-    # CALL OPENAI
-    # --------------------------------------------------------
-
-    with st.spinner("🤖 AI is analyzing the market..."):
-
-        try:
-
-            response = client.responses.create(
-                model="gpt-6-luna",
-                input=prompt
-            )
-
-            raw_output = response.output_text.strip()
-
-            # Remove accidental markdown fences
-            if raw_output.startswith("```json"):
-                raw_output = raw_output[7:]
+---
 
-            if raw_output.startswith("```"):
-                raw_output = raw_output[3:]
+### Step 3: Install Dependencies
 
-            if raw_output.endswith("```"):
-                raw_output = raw_output[:-3]
+```bash
+pip install -r requirements.txt
+```
 
-            raw_output = raw_output.strip()
+---
 
-            data = json.loads(raw_output)
+### Step 4: Configure the API Key
 
-        except json.JSONDecodeError:
+Create a file named:
 
-            st.error(
-                "The AI returned an invalid JSON response. "
-                "Please try generating the analysis again."
-            )
+```text
+.env
+```
 
-            st.stop()
+Add your API key:
 
-        except Exception as error:
+```env
+OPENAI_API_KEY=your_api_key_here
+```
 
-            st.error("Unable to generate the AI analysis.")
+> ⚠️ Never upload your `.env` file or expose your API key publicly.
 
-            st.code(str(error))
+---
 
-            st.stop()
+### Step 5: Run the Application
 
+```bash
+streamlit run app.py
+```
 
-    # ========================================================
-    # 10. DASHBOARD HEADER
-    # ========================================================
+The application will open in your browser.
 
-    st.success("✅ Market intelligence generated successfully!")
+Usually, it will be available at:
 
-    st.header("📊 Market Intelligence Dashboard")
+```text
+http://localhost:8501
+```
 
-    st.write(
-        f"### {business_name}"
-    )
+---
 
-    st.write(
-        data["executive_summary"]
-    )
+## 📋 Requirements
 
+The project requires:
 
-    # ========================================================
-    # 11. KPI CARDS
-    # ========================================================
+```text
+Python 3.x
+OpenAI API Key
+Internet Connection
+```
 
-    st.subheader("📌 Business Intelligence Scores")
+Python packages are listed in `requirements.txt`.
 
-    scores = data["scores"]
+---
 
-    c1, c2, c3, c4, c5 = st.columns(5)
+## 🔒 Security
 
-    with c1:
-        st.metric(
-            "Market Opportunity",
-            f'{scores["market_opportunity"]}/100'
-        )
+The project uses environment variables to store sensitive API credentials.
 
-    with c2:
-        st.metric(
-            "Competitive Position",
-            f'{scores["competitive_position"]}/100'
-        )
+The `.env` file should be included in `.gitignore`:
 
-    with c3:
-        st.metric(
-            "Customer Potential",
-            f'{scores["customer_potential"]}/100'
-        )
+```text
+.env
+venv/
+__pycache__/
+```
 
-    with c4:
-        st.metric(
-            "Growth Potential",
-            f'{scores["growth_potential"]}/100'
-        )
+Never commit your API key to GitHub.
 
-    with c5:
-        st.metric(
-            "Business Risk",
-            f'{scores["business_risk"]}/100'
-        )
+---
 
+## 💻 Example Use Cases
 
-    st.divider()
+MarketIntel AI can be used by:
 
+* 🚀 Startups
+* 💼 Business Development Teams
+* 📊 Market Researchers
+* 📈 Entrepreneurs
+* 🎯 Marketing Teams
+* 🏢 Small Businesses
+* 💡 Students working on business ideas
 
-    # ========================================================
-    # 12. MARKET OVERVIEW
-    # ========================================================
+---
 
-    st.header("📈 Market Overview")
+## 🎯 Project Objectives
 
-    market = data["market_overview"]
+The main objectives of MarketIntel AI are:
 
-    st.subheader("Industry Outlook")
+1. Automate basic market research.
+2. Identify potential customer segments.
+3. Analyze competitors.
+4. Discover market opportunities.
+5. Identify business risks.
+6. Generate growth strategies.
+7. Present insights through an easy-to-understand dashboard.
+8. Help users make data-driven business decisions.
 
-    st.write(market["industry_outlook"])
+---
 
-    st.subheader("Key Market Factors")
+## 🌟 Advantages
 
-    for factor in market["key_factors"]:
-        st.write(f"• {factor}")
+* Simple and user-friendly interface
+* AI-powered analysis
+* Interactive visualizations
+* Fast generation of market insights
+* No database required
+* Suitable for startups and small businesses
+* Reduces manual market research effort
 
+---
 
-    st.divider()
+## 🔮 Future Enhancements
 
+Possible future improvements include:
 
-    # ========================================================
-    # 13. CUSTOMER INSIGHTS
-    # ========================================================
+* 🌐 Real-time web-based market data collection
+* 📰 News and trend analysis
+* 📱 Mobile-friendly dashboard
+* 📄 PDF report generation
+* 📊 Historical market comparison
+* 🤖 Multi-agent market research system
+* 📈 Real-time competitor monitoring
+* 🔔 Market trend alerts
+* 💬 AI business research assistant
 
-    st.header("👥 Customer Intelligence")
+---
 
-    customer_data = data["customer_segments"]
+## 👩‍💻 Author
 
-    customer_df = pd.DataFrame(customer_data)
+**Bhargavi Puligedda**
 
-    st.dataframe(
-        customer_df[
-            [
-                "segment",
-                "description",
-                "needs",
-                "pain_points",
-                "potential_score"
-            ]
-        ],
-        use_container_width=True,
-        hide_index=True
-    )
+B.Tech – Artificial Intelligence & Machine Learning
 
-    st.subheader("Customer Segment Potential")
+---
 
-    chart_data = customer_df[
-        ["segment", "potential_score"]
-    ].set_index("segment")
+## 📄 License
 
-    st.bar_chart(chart_data)
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 14. COMPETITOR INTELLIGENCE
-    # ========================================================
-
-    st.header("🏆 Competitor Intelligence")
-
-    competitor_data = data["competitors"]
-
-    if competitor_data:
-
-        competitor_df = pd.DataFrame(competitor_data)
-
-        st.dataframe(
-            competitor_df,
-            use_container_width=True,
-            hide_index=True
-        )
-
-        st.subheader("Competitor Threat Levels")
-
-        threat_chart = competitor_df[
-            ["name", "threat_level"]
-        ].set_index("name")
-
-        st.bar_chart(threat_chart)
-
-    else:
-
-        st.info(
-            "No competitors were provided. Add competitors to "
-            "receive competitor intelligence."
-        )
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 15. SWOT ANALYSIS
-    # ========================================================
-
-    st.header("⚖️ SWOT Analysis")
-
-    swot = data["swot"]
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-
-        st.subheader("💪 Strengths")
-
-        for item in swot["strengths"]:
-            st.success(item)
-
-    with col2:
-
-        st.subheader("⚠️ Weaknesses")
-
-        for item in swot["weaknesses"]:
-            st.warning(item)
-
-
-    col3, col4 = st.columns(2)
-
-    with col3:
-
-        st.subheader("🚀 Opportunities")
-
-        for item in swot["opportunities"]:
-            st.info(item)
-
-    with col4:
-
-        st.subheader("🔥 Threats")
-
-        for item in swot["threats"]:
-            st.error(item)
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 16. MARKET OPPORTUNITIES
-    # ========================================================
-
-    st.header("🚀 Market Opportunities")
-
-    opportunities = data["market_opportunities"]
-
-    opportunity_df = pd.DataFrame(opportunities)
-
-    st.dataframe(
-        opportunity_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    opportunity_chart = opportunity_df[
-        ["opportunity", "score"]
-    ].set_index("opportunity")
-
-    st.bar_chart(opportunity_chart)
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 17. GROWTH STRATEGIES
-    # ========================================================
-
-    st.header("📈 Growth Strategies")
-
-    for index, strategy in enumerate(
-        data["growth_strategies"],
-        start=1
-    ):
-
-        st.info(
-            f"**Strategy {index}:** {strategy}"
-        )
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 18. BUSINESS RISKS
-    # ========================================================
-
-    st.header("⚠️ Business Risk Analysis")
-
-    risk_data = data["business_risks"]
-
-    risk_df = pd.DataFrame(risk_data)
-
-    st.dataframe(
-        risk_df,
-        use_container_width=True,
-        hide_index=True
-    )
-
-    risk_chart = risk_df[
-        ["risk", "severity"]
-    ].set_index("risk")
-
-    st.bar_chart(risk_chart)
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 19. RECOMMENDATIONS
-    # ========================================================
-
-    st.header("💡 AI Strategic Recommendations")
-
-    for index, recommendation in enumerate(
-        data["recommendations"],
-        start=1
-    ):
-
-        st.success(
-            f"**{index}.** {recommendation}"
-        )
-
-
-    st.divider()
-
-
-    # ========================================================
-    # 20. DOWNLOAD DATA
-    # ========================================================
-
-    st.header("📥 Export Analysis")
-
-    download_data = json.dumps(
-        data,
-        indent=4
-    )
-
-    st.download_button(
-        label="Download Market Intelligence Data",
-        data=download_data,
-        file_name=(
-            f"{business_name}_market_intelligence.json"
-        ),
-        mime="application/json",
-        use_container_width=True
-    )
+This project is developed for educational and portfolio purposes.
